@@ -1,0 +1,33 @@
+name: Phase 1 Docker CI
+
+on:
+  push:
+    branches: [ phase-1 ]
+  pull_request:
+    branches: [ phase-1 ]
+
+jobs:
+  build-test-report:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build Docker Image
+      run: docker build -t ai-project .
+
+    - name: 1. Code Style Check
+      run: docker run --rm ai-project flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+
+    - name: 2. Run Tests & Generate Report
+
+      run: docker run --rm -v ${{ github.workspace }}/reports:/app/reports ai-project pytest tests/ --html=reports/report.html --self-contained-html
+
+    - name: 3. Upload Test Report
+
+      if: always() 
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-report
+        path: reports/report.html
