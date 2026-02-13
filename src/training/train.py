@@ -6,9 +6,9 @@ def main():
     device = '0' if torch.cuda.is_available() else 'cpu'
     print(f" Training on device: {device}")
 
-    print(" Building Custom YOLOv8 Model from Scratch...")
+    print(" Building Custom YOLOv8 Model")
     model = YOLO('configs/custom_yolov8.yaml') 
-
+    model.load('yolov8n.pt')
 
     print(" Starting Training for 8 Classes...")
     results = model.train(
@@ -18,7 +18,7 @@ def main():
         batch=16,
         imgsz=640,
         device=device,
-        optimizer='SGD',
+        optimizer='AdamW',
         lr0=0.001, 
         project='runs/train',
         name='kitti_custom_8class', 

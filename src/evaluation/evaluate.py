@@ -4,7 +4,7 @@ import os
 def evaluate_baseline():
     print("Starting Evaluation on Unseen Test Set...")
     
-    weights_path = 'runs/detect/runs/train/kitti_custom_8class/weights/best.pt'
+    weights_path = 'runs/detect/runs/train/Pretrained_Run/weights/best.pt'
     
     if not os.path.exists(weights_path):
         print(f"Error: Model not found at {weights_path}")
@@ -12,7 +12,7 @@ def evaluate_baseline():
 
     model = YOLO(weights_path)
     
-    print("\n📊 Evaluating BASELINE model...")
+    print("\n Evaluating BASELINE model...")
     metrics = model.val(
         data='configs/kitti.yaml',
         split='test',
@@ -21,7 +21,7 @@ def evaluate_baseline():
         device=0,
         plots=True,
         project='runs/evaluate',
-        name='baseline_test' 
+        name='optimized_test'
     )
     
     print("\n Baseline Evaluation Completed!")
