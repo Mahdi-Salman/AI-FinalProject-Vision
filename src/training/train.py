@@ -8,7 +8,6 @@ def main():
 
     print(" Building Custom YOLOv8 Model from Scratch...")
     model = YOLO('configs/custom_yolov8.yaml') 
-    model.load('yolov8n.pt')
 
 
     print(" Starting Training for 8 Classes...")
@@ -19,7 +18,7 @@ def main():
         batch=16,
         imgsz=640,
         device=device,
-        optimizer='AdamW',
+        optimizer='SGD',
         lr0=0.001, 
         project='runs/train',
         name='kitti_custom_8class', 

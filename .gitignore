@@ -215,3 +215,5 @@ models/
 *.h5
 *.zip
 __pycache__/
+
+runs/
