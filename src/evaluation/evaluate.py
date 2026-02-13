@@ -4,7 +4,7 @@ import os
 def evaluate_baseline():
     print("Starting Evaluation on Unseen Test Set...")
     
-    weights_path = 'runs/detect/runs/train/Pretrained_Run/weights/best.pt'
+    weights_path = 'runs/detect/runs/train/YOLOv8s_Advanced_Run/weights/best.pt'
     
     if not os.path.exists(weights_path):
         print(f"Error: Model not found at {weights_path}")
@@ -21,7 +21,7 @@ def evaluate_baseline():
         device=0,
         plots=True,
         project='runs/evaluate',
-        name='optimized_test'
+        name='advanced_test'
     )
     
     print("\n Baseline Evaluation Completed!")

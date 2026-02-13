@@ -1,32 +1,27 @@
 from ultralytics import YOLO
-import torch
-import os
 
-def main():
-    device = '0' if torch.cuda.is_available() else 'cpu'
-    print(f" Training on device: {device}")
+def train_advanced_model():
+    print(" Starting Advanced Training with Custom YOLOv8s...")
 
-    print(" Building Custom YOLOv8 Model")
-    model = YOLO('configs/custom_yolov8.yaml') 
-    model.load('yolov8n.pt')
-
-    print(" Starting Training for 8 Classes...")
-    results = model.train(
+    model = YOLO('configs/custom_yolov8.yaml')
+    model.load('yolov8s.pt')
+    
+    model.train(
         data='configs/kitti.yaml',
         epochs=100,
-        patience=15,
-        batch=16,
         imgsz=640,
-        device=device,
+        batch=16,
         optimizer='AdamW',
-        lr0=0.001, 
+        lr0=0.001,
+        weight_decay=0.0005,
+        patience=10,
+        mosaic=1.0,
+        mixup=0.1,
         project='runs/train',
-        name='kitti_custom_8class', 
-        exist_ok=True, 
-        verbose=True
+        name='YOLOv8s_Advanced_Run'
     )
-
-    print(" Training Finished!")
+    
+    print(" Advanced Training Completed Successfully!")
 
 if __name__ == '__main__':
-    main()
+    train_advanced_model()

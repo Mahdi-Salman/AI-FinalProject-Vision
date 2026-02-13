@@ -2,11 +2,7 @@ version: '3.8'
 
 services:
   yolo-trainer:
-    build: .
     image: phase-2-image:latest
-    container_name: vision_phase2_trainer
-    ipc: host
-    
     deploy:
       resources:
         reservations:
@@ -14,11 +10,34 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-              
+    ipc: host
     volumes:
-      - ./:/app
+      - .:/app
       - ./runs:/app/runs
       - ./data:/app/data/kitti
-      - ~/Desktop:/app/desktop 
-      
     command: python src/training/train.py
+
+  yolo-evaluator:
+    image: phase-2-image:latest
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    ipc: host
+    volumes:
+      - .:/app
+      - ./runs:/app/runs
+      - ./data:/app/data/kitti
+    command: python src/evaluation/evaluate.py
+
+  yolo-ui:
+    image: phase-2-image:latest
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+      - ./runs:/app/runs
+    command: bash -c "apt-get update && apt-get install -y ffmpeg && pip install streamlit && streamlit run src/ui/app.py --server.port=8501 --server.address=0.0.0.0"
