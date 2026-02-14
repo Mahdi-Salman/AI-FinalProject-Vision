@@ -1,0 +1,48 @@
+name: Phase 2 AI Smoke Test Pipeline
+
+on:
+  push:
+    branches: 
+      - "main"
+      - "master"
+      - "phase-2*"
+  pull_request:
+    branches: [ "main", "master", "phase-2*" ]
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+
+      - name: Optimize Requirements for CI (CPU Only)
+        run: |
+          echo "🔥 Creating lightweight CPU-only requirements..."
+          echo "--extra-index-url https://download.pytorch.org/whl/cpu" > requirements.txt
+          echo "torch" >> requirements.txt
+          echo "torchvision" >> requirements.txt
+          echo "ultralytics" >> requirements.txt
+          echo "streamlit" >> requirements.txt
+          cat requirements.txt
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        run: |
+          docker build -t phase2-image:latest .
+
+      - name: Smoke Training Test
+        run: |
+          docker run --rm phase2-image:latest \
+            yolo train model=yolov8n.yaml \
+            data=coco8.yaml \
+            epochs=1 \
+            imgsz=32 \
+            batch=2 \
+            project=runs/smoke_test \
+            name=smoke_run \
+            device=cpu
